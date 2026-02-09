@@ -505,14 +505,15 @@
             formData[field.id] = answer;
             
             if (field.id === 'anotherAsset') {
-                if (answer === 'Yes') {
+                // Only save if we have asset data to save
+                if (formData.assetNumber || formData.padLocation || formData.issueDescription) {
                     saveCurrentAsset();
+                }
+                
+                if (answer === 'Yes') {
                     const insertIndex = currentStepIndex + 1;
                     currentFields.splice(insertIndex, 0, ...assetFields);
                     inAssetSection = true;
-                } else {
-                    saveCurrentAsset();
-                    inAssetSection = false;
                 }
             }
             
@@ -658,7 +659,9 @@
         
         function sendEmailAndShowSuccess() {
             const today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
-            const assetNumbers = assetsData.map(a => a.assetNumber || 'No Asset #').join(', ');
+            const assetNumbers = assetsData.length > 0
+                ? assetsData.map(a => a.assetNumber || 'No Asset #').join(', ')
+                : 'No Asset #';
             
             const subject = encodeURIComponent(`Service Request - ${today} - ${assetNumbers}`);
             const body = encodeURIComponent(buildEmailBody());
@@ -731,10 +734,12 @@
             
             // Build description copy/paste line
             const dateFormatted = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
-            const customerName = formData.name || 'NoName';
-            const pad = formData.padLocation || assetsData[0]?.padLocation || 'NoPad';
-            const assetNumbers = assetsData.map(a => a.assetNumber || 'NoAsset').join(' ');
-            const descriptionLine = `${dateFormatted} ${customerName} ${pad} ${assetNumbers}`;
+            const customerName = (formData.name || 'NoName').replace(/\s+/g, '');
+            const firstPad = assetsData.length > 0 && assetsData[0].padLocation ? assetsData[0].padLocation.replace(/\s+/g, '') : 'NoPad';
+            const assetNumbers = assetsData.length > 0 
+                ? assetsData.map(a => (a.assetNumber || 'NoAsset').replace(/\s+/g, '')).join(' ')
+                : 'NoAsset';
+            const descriptionLine = `${dateFormatted} ${customerName} ${firstPad} ${assetNumbers}`;
             
             body += `DESCRIPTION COPY/PASTE:\n${descriptionLine}\n\n`;
             body += '='.repeat(60) + '\n\n';
