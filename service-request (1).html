@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Service Request - MagTec Alaska</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #FF6B35;
+        }
+        
+        .logo {
+            max-width: 280px;
+            width: 100%;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .header h1 {
+            color: #000000;
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 5px;
+            letter-spacing: 1px;
+        }
+        
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B35 0%, #FFA500 100%);
+            transition: width 0.3s ease;
+            border-radius: 10px;
+        }
+        
+        .step-counter {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        
+        .question {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 25px;
+            line-height: 1.4;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+        }
+        
+        input, textarea, select {
+            width: 100%;
+            padding: 18px;
+            font-size: 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #FF6B35;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        button {
+            flex: 1;
+            padding: 18px;
+            font-size: 18px;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+        
+        .btn-next {
+            background: linear-gradient(135deg, #FF6B35 0%, #FFA500 100%);
+            color: white;
+        }
+        
+        .btn-next:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.4);
+        }
+        
+        .btn-back {
+            background: #f5f5f5;
+            color: #666;
+        }
+        
+        .btn-back:hover {
+            background: #e0e0e0;
+        }
+        
+        .btn-submit {
+            background: #10b981;
+            color: white;
+            width: 100%;
+        }
+        
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-choice {
+            width: 100%;
+            padding: 20px;
+            margin: 10px 0;
+            font-size: 20px;
+            font-weight: 600;
+            border: 3px solid #e0e0e0;
+            background: white;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-choice:hover {
+            border-color: #FF6B35;
+            background: #fff5f0;
+            transform: translateY(-2px);
+        }
+        
+        .btn-yes {
+            border-color: #10b981;
+            color: #10b981;
+        }
+        
+        .btn-yes:hover {
+            background: #ecfdf5;
+            border-color: #059669;
+        }
+        
+        .btn-no {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+        
+        .btn-no:hover {
+            background: #fef2f2;
+            border-color: #dc2626;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .confirmation-screen {
+            padding: 20px 0;
+        }
+        
+        .success-icon {
+            text-align: center;
+            font-size: 72px;
+            margin-bottom: 20px;
+        }
+        
+        .confirmation-screen h2 {
+            color: #FF6B35;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        
+        .confirmation-details {
+            background: #f9fafb;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 25px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .detail-row {
+            padding: 12px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .detail-value {
+            color: #6b7280;
+            font-size: 16px;
+        }
+        
+        .asset-entry {
+            background: white;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border-left: 4px solid #FF6B35;
+        }
+        
+        .helper-text {
+            font-size: 14px;
+            color: #999;
+            margin-top: 8px;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .question {
+                font-size: 18px;
+            }
+            
+            input, textarea, select, button {
+                font-size: 16px;
+            }
+            
+            .logo {
+                max-width: 220px;
+            }
+            
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <svg class="logo" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+                        <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                    </linearGradient>
+                </defs>
+                <g transform="translate(100, 100)">
+                    <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="url(#orangeGradient)" stroke-width="3" transform="rotate(60)"/>
+                    <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFD700" stroke-width="3" transform="rotate(0)"/>
+                    <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFA500" stroke-width="3" transform="rotate(-60)"/>
+                    <circle cx="55" cy="0" r="8" fill="#FF6B35"/>
+                    <circle cx="-27" cy="48" r="8" fill="#FFD700"/>
+                    <circle cx="-27" cy="-48" r="8" fill="#FFA500"/>
+                    <circle cx="0" cy="0" r="10" fill="url(#orangeGradient)"/>
+                </g>
+                <text x="200" y="110" font-family="Arial, sans-serif" font-size="65" font-weight="bold" fill="#1a1a1a">MagTec</text>
+                <text x="200" y="145" font-family="Arial, sans-serif" font-size="28" font-weight="normal" fill="#FF6B35" font-style="italic">ALASKA<tspan font-size="22" baseline-shift="super">LLC</tspan></text>
+            </svg>
+            <h1>SERVICE REQUEST</h1>
+            <p>Equipment Service Request Form</p>
+        </div>
+        
+        <div class="step-counter">
+            Step <span id="currentStep">1</span> of <span id="totalSteps">--</span>
+        </div>
+        <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+        </div>
+        
+        <div id="formSteps"></div>
+    </div>
+
+    <script>
+        const RECIPIENT_EMAILS = ['NSRentals@magtecalaska.com', 'Mrussell@magtecalaska.com'];
+        
+        const baseFields = [
+            {
+                id: 'name',
+                question: 'Name',
+                type: 'text',
+                required: false,
+                placeholder: 'Contact name'
+            },
+            {
+                id: 'company',
+                question: 'Company',
+                type: 'text',
+                required: false,
+                placeholder: 'Company name'
+            },
+            {
+                id: 'phone',
+                question: 'Contact phone number',
+                type: 'tel',
+                required: false,
+                placeholder: 'Phone number'
+            },
+            {
+                id: 'email',
+                question: 'Contact email',
+                type: 'email',
+                required: false,
+                placeholder: 'Email address'
+            },
+            {
+                id: 'assetNumber',
+                question: 'Asset #',
+                type: 'text',
+                required: false,
+                placeholder: 'Enter asset number'
+            },
+            {
+                id: 'padLocation',
+                question: 'Pad and/or location',
+                type: 'text',
+                required: false,
+                placeholder: 'Enter pad name or location'
+            },
+            {
+                id: 'issueDescription',
+                question: 'Description of issue(s)',
+                type: 'textarea',
+                required: false,
+                placeholder: 'Describe the issues with this asset'
+            },
+            {
+                id: 'anotherAsset',
+                question: 'Does another asset need to be entered?',
+                type: 'yesno',
+                required: false
+            }
+        ];
+
+        const assetFields = [
+            {
+                id: 'assetNumber',
+                question: 'Asset #',
+                type: 'text',
+                required: false,
+                placeholder: 'Enter asset number'
+            },
+            {
+                id: 'padLocation',
+                question: 'Pad and/or location',
+                type: 'text',
+                required: false,
+                placeholder: 'Enter pad name or location'
+            },
+            {
+                id: 'issueDescription',
+                question: 'Description of issue(s)',
+                type: 'textarea',
+                required: false,
+                placeholder: 'Describe the issues with this asset'
+            },
+            {
+                id: 'anotherAsset',
+                question: 'Does another asset need to be entered?',
+                type: 'yesno',
+                required: false
+            }
+        ];
+
+        const finalFields = [
+            {
+                id: 'additionalInfo',
+                question: 'Any other important or helpful information',
+                type: 'textarea',
+                required: false,
+                placeholder: 'Additional notes, special requirements, or other information'
+            }
+        ];
+
+        let currentStepIndex = 0;
+        let formData = {};
+        let assetsData = [];
+        let currentFields = [];
+        let inAssetSection = false;
+        
+        function buildFieldList() {
+            currentFields = [...baseFields, ...finalFields];
+        }
+        
+        function init() {
+            buildFieldList();
+            document.getElementById('totalSteps').textContent = getTotalSteps();
+            showStep(currentStepIndex);
+        }
+        
+        function getTotalSteps() {
+            return currentFields.length;
+        }
+        
+        function showStep(index) {
+            currentStepIndex = index;
+            const field = currentFields[index];
+            const formStepsDiv = document.getElementById('formSteps');
+            
+            const totalSteps = getTotalSteps();
+            const progress = ((index + 1) / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('currentStep').textContent = index + 1;
+            document.getElementById('totalSteps').textContent = totalSteps;
+            
+            let inputHTML = '';
+            const savedValue = formData[field.id] || '';
+            
+            if (field.type === 'yesno') {
+                inputHTML = `
+                    <button class="btn-choice btn-yes" onclick="handleYesNo('Yes')">✓ Yes</button>
+                    <button class="btn-choice btn-no" onclick="handleYesNo('No')">✗ No</button>
+                `;
+            } else if (field.type === 'textarea') {
+                inputHTML = `<textarea id="currentInput" placeholder="${field.placeholder || ''}">${savedValue}</textarea>`;
+            } else if (field.type === 'select') {
+                inputHTML = `<select id="currentInput">
+                    <option value="">-- Select --</option>
+                    ${field.options.map(opt => `<option value="${opt}" ${savedValue === opt ? 'selected' : ''}>${opt}</option>`).join('')}
+                </select>`;
+            } else {
+                const defaultVal = field.defaultValue ? field.defaultValue() : '';
+                const value = savedValue || defaultVal;
+                inputHTML = `<input type="${field.type}" id="currentInput" placeholder="${field.placeholder || ''}" value="${value}">`;
+            }
+            
+            const buttons = field.type === 'yesno' ? '' : `
+                <div class="button-group">
+                    ${index > 0 ? '<button class="btn-back" onclick="goBack()">← Back</button>' : ''}
+                    ${index < currentFields.length - 1 
+                        ? '<button class="btn-next" onclick="goNext()">Next →</button>'
+                        : '<button class="btn-submit" onclick="submitForm()">✓ Submit Request</button>'
+                    }
+                </div>
+            `;
+            
+            formStepsDiv.innerHTML = `
+                <div class="question">${field.question}</div>
+                <div class="input-group">
+                    ${inputHTML}
+                </div>
+                ${buttons}
+            `;
+            
+            setTimeout(() => {
+                const input = document.getElementById('currentInput');
+                if (input) input.focus();
+            }, 100);
+        }
+        
+        function handleYesNo(answer) {
+            const field = currentFields[currentStepIndex];
+            formData[field.id] = answer;
+            
+            if (field.id === 'anotherAsset') {
+                if (answer === 'Yes') {
+                    saveCurrentAsset();
+                    const insertIndex = currentStepIndex + 1;
+                    currentFields.splice(insertIndex, 0, ...assetFields);
+                    inAssetSection = true;
+                } else {
+                    saveCurrentAsset();
+                    inAssetSection = false;
+                }
+            }
+            
+            goNext();
+        }
+        
+        function saveCurrentAsset() {
+            const asset = {
+                assetNumber: formData.assetNumber || '',
+                padLocation: formData.padLocation || '',
+                issueDescription: formData.issueDescription || ''
+            };
+            assetsData.push(asset);
+            
+            delete formData.assetNumber;
+            delete formData.padLocation;
+            delete formData.issueDescription;
+        }
+        
+        function saveCurrentStep() {
+            const field = currentFields[currentStepIndex];
+            if (field.type !== 'yesno') {
+                const input = document.getElementById('currentInput');
+                formData[field.id] = input ? input.value : '';
+            }
+        }
+        
+        function goNext() {
+            saveCurrentStep();
+            if (currentStepIndex < currentFields.length - 1) {
+                showStep(currentStepIndex + 1);
+            }
+        }
+        
+        function goBack() {
+            saveCurrentStep();
+            if (currentStepIndex > 0) {
+                showStep(currentStepIndex - 1);
+            }
+        }
+        
+        function submitForm() {
+            saveCurrentStep();
+            showConfirmation();
+        }
+        
+        function showConfirmation() {
+            const container = document.querySelector('.container');
+            
+            let detailsHTML = '';
+            
+            detailsHTML += createDetailRow('Name', formData.name || 'Not provided');
+            detailsHTML += createDetailRow('Company', formData.company || 'Not provided');
+            detailsHTML += createDetailRow('Phone', formData.phone || 'Not provided');
+            detailsHTML += createDetailRow('Email', formData.email || 'Not provided');
+            
+            if (assetsData.length > 0) {
+                detailsHTML += '<div class="detail-row"><div class="detail-label">ASSETS:</div></div>';
+                assetsData.forEach((asset, index) => {
+                    detailsHTML += `
+                        <div class="asset-entry">
+                            <strong>Asset ${index + 1}:</strong><br>
+                            Asset #: ${asset.assetNumber}<br>
+                            Location: ${asset.padLocation}<br>
+                            Issues: ${asset.issueDescription}
+                        </div>
+                    `;
+                });
+            }
+            
+            detailsHTML += createDetailRow('Additional Info', formData.additionalInfo || 'None');
+            
+            container.innerHTML = `
+                <div class="header">
+                    <svg class="logo" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(100, 100)">
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="url(#orangeGradient)" stroke-width="3" transform="rotate(60)"/>
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFD700" stroke-width="3" transform="rotate(0)"/>
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFA500" stroke-width="3" transform="rotate(-60)"/>
+                            <circle cx="55" cy="0" r="8" fill="#FF6B35"/>
+                            <circle cx="-27" cy="48" r="8" fill="#FFD700"/>
+                            <circle cx="-27" cy="-48" r="8" fill="#FFA500"/>
+                            <circle cx="0" cy="0" r="10" fill="url(#orangeGradient)"/>
+                        </g>
+                        <text x="200" y="110" font-family="Arial, sans-serif" font-size="65" font-weight="bold" fill="#1a1a1a">MagTec</text>
+                        <text x="200" y="145" font-family="Arial, sans-serif" font-size="28" font-weight="normal" fill="#FF6B35" font-style="italic">ALASKA<tspan font-size="22" baseline-shift="super">LLC</tspan></text>
+                    </svg>
+                    <h1>SERVICE REQUEST</h1>
+                    <p>Equipment Service Request Form</p>
+                </div>
+                <div class="confirmation-screen">
+                    <div class="success-icon">👀</div>
+                    <h2>Review Your Information</h2>
+                    <p style="text-align: center; color: #666; margin-bottom: 20px; font-size: 16px;">
+                        <strong>Review your details below, then click "Send via Email".</strong><br>
+                        <span style="font-size: 14px;">Your email app will open - just hit send to submit your request.</span>
+                    </p>
+                    <div class="confirmation-details">
+                        ${detailsHTML}
+                    </div>
+                    <button class="btn-submit" onclick="downloadAndSend()" style="width: 100%;">
+                        📧 Send via Email
+                    </button>
+                    <button class="btn-back" onclick="location.reload()" style="width: 100%; margin-top: 15px;">
+                        ← Start Over
+                    </button>
+                </div>
+            `;
+        }
+        
+        function createDetailRow(label, value) {
+            return `
+                <div class="detail-row">
+                    <div class="detail-label">${label}</div>
+                    <div class="detail-value">${value}</div>
+                </div>
+            `;
+        }
+        
+        function downloadAndSend() {
+            const confirmationText = buildEmailBody();
+            const blob = new Blob([confirmationText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const today = new Date().toISOString().split('T')[0];
+            a.download = `Service_Request_${today}_${assetsData.map(a => a.assetNumber).join('_')}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            setTimeout(() => {
+                sendEmailAndShowSuccess();
+            }, 500);
+        }
+        
+        function sendEmailAndShowSuccess() {
+            const today = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+            const assetNumbers = assetsData.map(a => a.assetNumber || 'No Asset #').join(', ');
+            
+            const subject = encodeURIComponent(`Service Request - ${today} - ${assetNumbers}`);
+            const body = encodeURIComponent(buildEmailBody());
+            const mailtoLink = `mailto:${RECIPIENT_EMAILS.join(',')}?subject=${subject}&body=${body}`;
+            
+            window.location.href = mailtoLink;
+            
+            setTimeout(() => {
+                showSuccessMessage();
+            }, 1000);
+        }
+        
+        function showSuccessMessage() {
+            const container = document.querySelector('.container');
+            container.innerHTML = `
+                <div class="header">
+                    <svg class="logo" viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="orangeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="0%" style="stop-color:#FF6B35;stop-opacity:1" />
+                                <stop offset="100%" style="stop-color:#FFA500;stop-opacity:1" />
+                            </linearGradient>
+                        </defs>
+                        <g transform="translate(100, 100)">
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="url(#orangeGradient)" stroke-width="3" transform="rotate(60)"/>
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFD700" stroke-width="3" transform="rotate(0)"/>
+                            <ellipse cx="0" cy="0" rx="60" ry="25" fill="none" stroke="#FFA500" stroke-width="3" transform="rotate(-60)"/>
+                            <circle cx="55" cy="0" r="8" fill="#FF6B35"/>
+                            <circle cx="-27" cy="48" r="8" fill="#FFD700"/>
+                            <circle cx="-27" cy="-48" r="8" fill="#FFA500"/>
+                            <circle cx="0" cy="0" r="10" fill="url(#orangeGradient)"/>
+                        </g>
+                        <text x="200" y="110" font-family="Arial, sans-serif" font-size="65" font-weight="bold" fill="#1a1a1a">MagTec</text>
+                        <text x="200" y="145" font-family="Arial, sans-serif" font-size="28" font-weight="normal" fill="#FF6B35" font-style="italic">ALASKA<tspan font-size="22" baseline-shift="super">LLC</tspan></text>
+                    </svg>
+                    <h1>SERVICE REQUEST</h1>
+                </div>
+                <div class="confirmation-screen">
+                    <div class="success-icon">✓</div>
+                    <h2 style="color: #10b981;">Request Sent!</h2>
+                    <div style="background: #ecfdf5; border: 2px solid #10b981; border-radius: 12px; padding: 25px; margin: 20px 0; text-align: center;">
+                        <p style="font-size: 18px; color: #059669; margin-bottom: 15px;">
+                            <strong>✓ Your copy has been saved to your device</strong>
+                        </p>
+                        <p style="font-size: 18px; color: #059669;">
+                            <strong>✓ Service request sent to MagTec Alaska</strong>
+                        </p>
+                        <p style="margin-top: 15px; font-size: 14px; color: #6b7280;">
+                            We'll contact you shortly about your service request!
+                        </p>
+                    </div>
+                    <div style="background: #f9fafb; border-radius: 12px; padding: 20px; margin: 20px 0; text-align: center;">
+                        <p style="font-size: 20px; color: #FF6B35; font-weight: 600; margin-bottom: 10px;">
+                            Thank you, ${formData.name || 'Customer'}!
+                        </p>
+                        <p style="font-size: 16px; color: #6b7280;">
+                            Your service request has been submitted successfully.
+                        </p>
+                    </div>
+                    <button class="btn-submit" onclick="location.reload()" style="width: 100%;">
+                        + Submit Another Request
+                    </button>
+                </div>
+            `;
+        }
+        
+        function buildEmailBody() {
+            let body = 'SERVICE REQUEST - MagTec Alaska\n';
+            body += '='.repeat(60) + '\n\n';
+            
+            // Build description copy/paste line
+            const dateFormatted = new Date().toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: '2-digit' });
+            const customerName = formData.name || 'NoName';
+            const pad = formData.padLocation || assetsData[0]?.padLocation || 'NoPad';
+            const assetNumbers = assetsData.map(a => a.assetNumber || 'NoAsset').join(' ');
+            const descriptionLine = `${dateFormatted} ${customerName} ${pad} ${assetNumbers}`;
+            
+            body += `DESCRIPTION COPY/PASTE:\n${descriptionLine}\n\n`;
+            body += '='.repeat(60) + '\n\n';
+            
+            body += `Name: ${formData.name || 'Not provided'}\n`;
+            body += `Company: ${formData.company || 'Not provided'}\n`;
+            body += `Phone: ${formData.phone || 'Not provided'}\n`;
+            body += `Email: ${formData.email || 'Not provided'}\n\n`;
+            
+            if (assetsData.length > 0) {
+                body += 'ASSETS REQUIRING SERVICE:\n';
+                body += '-'.repeat(40) + '\n';
+                assetsData.forEach((asset, index) => {
+                    body += `Asset ${index + 1}:\n`;
+                    body += `  Asset #: ${asset.assetNumber}\n`;
+                    body += `  Pad/Location: ${asset.padLocation}\n`;
+                    body += `  Issues: ${asset.issueDescription}\n\n`;
+                });
+            }
+            
+            body += `ADDITIONAL INFORMATION:\n${formData.additionalInfo || 'None provided'}\n\n`;
+            
+            body += '='.repeat(60) + '\n';
+            body += `Submitted: ${new Date().toLocaleString()}\n`;
+            
+            return body;
+        }
+        
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+                const field = currentFields[currentStepIndex];
+                if (field.type !== 'yesno') {
+                    if (currentStepIndex < currentFields.length - 1) {
+                        goNext();
+                    } else {
+                        submitForm();
+                    }
+                }
+            }
+        });
+        
+        init();
+    </script>
+</body>
+</html>
